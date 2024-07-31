@@ -1,0 +1,459 @@
+def func(x):
+    return x**2 - x - 2
+
+def regula_falsi(a, b, iterations, tol=1e-6):
+    if func(a) * func(b) >= 0:
+        print("Invalid initial guesses.")
+        return None
+
+    for i in range(iterations):
+        x = a * func(b) - b * func(a) / (func(b) - func(a))
+        print(f"Iteration {i+1}: x = {x}, f(x) = {func(x)}")
+
+        if abs(func(x)) < tol:
+            print(f"Root found at x = {x} after {i+1} iterations")
+            return x
+
+        if func(a) * func(x) < 0:
+            b = x
+        else:
+            a = x
+
+    print(f"Approximate root after {iterations} iterations is x = {x}")
+    return x
+
+# Initial guesses
+a = 1
+b = 3
+iterations = 3
+
+regula_falsi(a, b, iterations)
+Iteration 1: x = 5.0, f(x) = 18.0
+Iteration 2: x = 18.5, f(x) = 321.75
+Iteration 3: x = 321.8642857142857, f(x) = 103272.75413265305
+Approximate root after 3 iterations is x = 321.8642857142857
+321.8642857142857
+import sympy as sp
+
+# Define the variable and the function
+x = sp.symbols('x')
+f = x**3 + 2*x**2 + 3*x + 4
+
+# Differentiate the function
+f_prime = sp.diff(f, x)
+f_prime
+$\displaystyle 3 x^{2} + 4 x + 3$
+import scipy.integrate as spi
+
+# Define the function to integrate
+def f(x):
+    return x**3 + 2*x**2 + 3*x + 4
+
+# Perform the numerical integration
+result, error = spi.quad(f, 0, 1)
+result
+6.416666666666667
+import numpy as np
+import scipy.optimize as opt
+import matplotlib.pyplot as plt
+
+# Define the model function to fit
+def model_func(x, a, b, c):
+    return a * x**2 + b * x + c
+
+# Generate some data points
+x_data = np.linspace(-10, 10, 100)
+y_data = model_func(x_data, 2.5, -1.3, 0.5) + np.random.normal(size=x_data.size)
+
+# Fit the model to the data
+popt, pcov = opt.curve_fit(model_func, x_data, y_data)
+
+# Plot the data and the fitted curve
+plt.scatter(x_data, y_data, label='Data')
+plt.plot(x_data, model_func(x_data, *popt), label='Fitted Curve', color='red')
+plt.legend()
+plt.show()
+No description has been provided for this image
+from sklearn.linear_model import LinearRegression
+
+# Generate some data points
+x_data = np.random.rand(100, 1) * 10
+y_data = 2 * x_data + 1 + np.random.normal(size=x_data.shape)
+
+# Create a linear regression model
+model = LinearRegression()
+
+# Fit the model to the data
+model.fit(x_data, y_data)
+
+# Get the slope (coefficient) and intercept
+slope = model.coef_[0]
+intercept = model.intercept_
+
+slope, intercept
+(array([1.92330706]), array([1.49008904]))
+import scipy.interpolate as spi
+
+# Generate some data points
+x_data = np.linspace(0, 10, 10)
+y_data = np.sin(x_data)
+
+# Create a spline interpolation
+spline = spi.InterpolatedUnivariateSpline(x_data, y_data)
+
+# Generate new x values and interpolate the y values
+x_new = np.linspace(0, 10, 100)
+y_new = spline(x_new)
+
+# Plot the data points and the interpolated curve
+plt.scatter(x_data, y_data, label='Data')
+plt.plot(x_new, y_new, label='Spline Interpolation', color='red')
+plt.legend()
+plt.show()
+No description has been provided for this image
+import numpy as np
+import scipy.interpolate as spi
+import matplotlib.pyplot as plt
+
+# Given data points
+x_data = np.array([2.00, 4.25, 5.25, 7.81, 9.20, 10.60])
+y_data = np.array([7.2, 7.1, 6.0, 5.0, 3.5, 5.0])
+
+# Create a linear interpolation function
+linear_interp = spi.interp1d(x_data, y_data, kind='linear')
+
+# Find the interpolated y value at x=4.0
+x_new = 4.0
+y_new = linear_interp(x_new)
+
+print(f'The interpolated y value at x={x_new} is y={y_new}')
+
+# Plot the data points and the linear interpolation
+x_plot = np.linspace(min(x_data), max(x_data), 100)
+y_plot = linear_interp(x_plot)
+
+plt.scatter(x_data, y_data, label='Data Points')
+plt.plot(x_plot, y_plot, label='Linear Interpolation', color='red')
+plt.scatter(x_new, y_new, color='green', zorder=5)  # Highlight the interpolated point
+plt.text(x_new, y_new, f'({x_new}, {y_new:.2f})', fontsize=12, verticalalignment='bottom')
+plt.xlabel('X (in)')
+plt.ylabel('Y (in)')
+plt.legend()
+plt.show()
+The interpolated y value at x=4.0 is y=7.111111111111111
+No description has been provided for this image
+def f(x):
+    return x**3 - 0.165*x**2 + 3.993e-4
+
+def f_prime(x):
+    return 3*x**2 - 0.33*x
+
+def newtons_method(x0, tol=1e-6, max_iterations=3):
+    x_n = x0
+    for i in range(max_iterations):
+        f_x_n = f(x_n)
+        f_prime_x_n = f_prime(x_n)
+        
+        if f_prime_x_n == 0:
+            print("Zero derivative. No solution found.")
+            return None
+        
+        x_n1 = x_n - f_x_n / f_prime_x_n
+        abs_error = abs((x_n1 - x_n) / x_n1) * 100
+        
+        print(f"Iteration {i+1}:")
+        print(f"x_{i+1} = {x_n1}")
+        print(f"f(x_{i+1}) = {f(x_n1)}")
+        print(f"Absolute Relative Approximate Error = {abs_error:.6f}%\n")
+        
+        x_n = x_n1
+
+    return x_n
+
+# Initial guess
+x0 = 0.05  # you can choose an initial guess
+
+# Perform Newton's Method
+root = newtons_method(x0)
+
+if root is not None:
+    print("Estimated root after 3 iterations:", root)
+    print("Function value at estimated root:", f(root))
+Iteration 1:
+x_1 = 0.06242222222222221
+f(x_1) = -3.97781026063122e-07
+Absolute Relative Approximate Error = 19.900320%
+
+Iteration 2:
+x_2 = 0.062377576543465846
+f(x_2) = 4.429374640506356e-11
+Absolute Relative Approximate Error = 0.071573%
+
+Iteration 3:
+x_3 = 0.06237758151374945
+f(x_3) = 5.421010862427522e-19
+Absolute Relative Approximate Error = 0.000008%
+
+Estimated root after 3 iterations: 0.06237758151374945
+Function value at estimated root: 5.421010862427522e-19
+def compute_fft():
+    # Parameters
+    f1 = 50   # frequency 1
+    f2 = 120  # frequency 2
+    Fs = 1000 # sampling frequency
+    T = 1     # duration in seconds
+
+    # Time vector
+    t = np.linspace(0, T, int(Fs*T), endpoint=False)
+
+    # Signal
+    s = np.sin(2 * np.pi * f1 * t) + np.sin(2 * np.pi * f2 * t)
+
+    # Compute FFT
+    N = len(s)
+    fft_s = np.fft.fft(s)
+    fft_s = fft_s[:N//2]  # Take the positive frequency part
+    freqs = np.fft.fftfreq(N, 1/Fs)[:N//2]
+
+    # Plot the signal
+    plt.figure(figsize=(12, 6))
+
+    plt.subplot(2, 1, 1)
+    plt.plot(t, s)
+    plt.title("Time Domain Signal")
+    plt.xlabel("Time [s]")
+    plt.ylabel("Amplitude")
+
+    # Plot the magnitude spectrum
+    plt.subplot(2, 1, 2)
+    plt.stem(freqs, np.abs(fft_s), 'b', markerfmt=" ", basefmt="-b")
+    plt.title("Frequency Domain Signal (FFT)")
+    plt.xlabel("Frequency [Hz]")
+    plt.ylabel("Magnitude")
+    plt.xlim(0, 500)  # Display up to half the sampling rate
+
+    plt.tight_layout()
+    plt.show()
+
+# Call the function to compute FFT and plot the results
+compute_fft()
+No description has been provided for this image
+# Define the function to integrate
+def f(x):
+    return x**3 + 2*x**2 + 3*x + 4
+
+# Implement the trapezoidal rule
+def trapezoidal_rule(f, a, b, n):
+    h = (b - a) / n
+    x = np.linspace(a, b, n+1)
+    y = f(x)
+    integral = (h/2) * (y[0] + 2 * np.sum(y[1:-1]) + y[-1])
+    return integral
+
+# Parameters
+a = 0  # Start of the interval
+b = 1  # End of the interval
+n = 100  # Number of sub-intervals
+
+# Calculate the integral using the trapezoidal rule
+integral = trapezoidal_rule(f, a, b, n)
+
+print(f'The approximate value of the integral is {integral:.4f}')
+
+# Optional: Compare with the exact integral using scipy.integrate.quad
+import scipy.integrate as spi
+
+exact_integral, _ = spi.quad(f, a, b)
+print(f'The exact value of the integral is {exact_integral:.4f}')
+The approximate value of the integral is 6.4167
+The exact value of the integral is 6.4167
+# Given data
+x = np.array([1, 2, 3, 4, 5, 6])
+y = np.array([5.5, 43.1, 128, 290.7, 498.4, 978.67])
+
+# Fit a 4th degree polynomial
+p = np.polyfit(x, y, 4)
+
+# Generate new x values for the fitted polynomial
+x2 = np.arange(1, 6.1, 0.1)  # similar to MATLAB's 1:0.1:6
+
+# Evaluate the polynomial at the new x values
+y2 = np.polyval(p, x2)
+
+# Plot the original data points and the polynomial fit
+plt.plot(x, y, 'o', label='Original data')
+plt.plot(x2, y2, label='Fitted polynomial')
+
+# Add grid
+plt.grid(True)
+
+# Add legend
+plt.legend()
+
+# Show plot
+plt.show()
+No description has been provided for this image
+import numpy as np
+
+# Function for Lagrange Interpolation
+def lagrange_interpolation(x, y):
+    def basis_polynomial(xi, xj, xk):
+        p = np.poly1d([1])
+        for x_m in xk:
+            if x_m != xi:
+                p *= np.poly1d([1, -x_m]) / (xi - x_m)
+        return p
+
+    n = len(x)
+    L = [basis_polynomial(xi, x, x) for xi in x]
+    P = np.poly1d([0])
+    for i in range(n):
+        P += y[i] * L[i]
+    return P
+
+# Function for Newton's Divided Difference
+def newton_divided_diff(x, y):
+    n = len(x)
+    diff_table = np.zeros((n, n))
+    diff_table[:,0] = y
+    
+    for j in range(1, n):
+        for i in range(n - j):
+            diff_table[i][j] = (diff_table[i + 1][j - 1] - diff_table[i][j - 1]) / (x[i + j] - x[i])
+    
+    coefficients = diff_table[0, :]
+    return coefficients, diff_table
+
+def newton_interpolation(coefficients, x_data, x):
+    n = len(coefficients)
+    p = np.poly1d(coefficients[-1])
+    for k in range(1, n):
+        p = np.poly1d(coefficients[-(k+1)]) + p * np.poly1d([1, -x_data[-(k)]])
+    return p
+
+# Given data points
+x = np.array([1, 2, 3, 4])
+y = np.array([1, 4, 9, 16])
+
+# Compute Lagrange polynomial
+P_lagrange = lagrange_interpolation(x, y)
+lagrange_coefficients = P_lagrange.coefficients
+print("Lagrange Polynomial Coefficients:", lagrange_coefficients)
+
+# Compute Newton's Divided Difference coefficients
+coefficients, diff_table = newton_divided_diff(x, y)
+P_newton = newton_interpolation(coefficients, x, x)
+newton_coefficients = P_newton.coefficients
+print("Newton Polynomial Coefficients:", newton_coefficients)
+
+# Analysis
+analysis = """
+3. Algorithm Analysis
+Both Lagrange and Newton's methods will produce the same interpolating polynomial for a given set of data points. The main difference lies in their computational approach:
+
+Lagrange Polynomial: The Lagrange interpolation formula directly constructs the polynomial using the basis polynomials. It is more straightforward but can be computationally intensive for a large number of points since it involves computing each basis polynomial separately.
+
+Newton’s Divided Difference: Newton's method constructs the polynomial incrementally, which can be more efficient. It uses the concept of divided differences to build the polynomial, and it is easier to add additional points to an existing interpolation without recalculating the entire polynomial.
+"""
+
+print(analysis)
+Lagrange Polynomial Coefficients: [-4.44089210e-16  1.00000000e+00 -3.55271368e-15  0.00000000e+00]
+Newton Polynomial Coefficients: [ 1. -2.  1.]
+
+3. Algorithm Analysis
+Both Lagrange and Newton's methods will produce the same interpolating polynomial for a given set of data points. The main difference lies in their computational approach:
+
+Lagrange Polynomial: The Lagrange interpolation formula directly constructs the polynomial using the basis polynomials. It is more straightforward but can be computationally intensive for a large number of points since it involves computing each basis polynomial separately.
+
+Newton’s Divided Difference: Newton's method constructs the polynomial incrementally, which can be more efficient. It uses the concept of divided differences to build the polynomial, and it is easier to add additional points to an existing interpolation without recalculating the entire polynomial.
+
+import numpy as np
+
+# Power Iteration Method
+def power_iteration(A, num_simulations: int):
+    b_k = np.random.rand(A.shape[1])
+    
+    for _ in range(num_simulations):
+        b_k1 = np.dot(A, b_k)
+        b_k1_norm = np.linalg.norm(b_k1)
+        b_k = b_k1 / b_k1_norm
+    
+    eigenvalue = np.dot(b_k.T, np.dot(A, b_k)) / np.dot(b_k.T, b_k)
+    eigenvector = b_k
+    
+    return eigenvalue, eigenvector
+
+# QR Algorithm
+def qr_algorithm(A, num_iterations: int):
+    A_k = A.copy()
+    
+    for _ in range(num_iterations):
+        Q, R = np.linalg.qr(A_k)
+        A_k = np.dot(R, Q)
+    
+    eigenvalues = np.diag(A_k)
+    
+    return eigenvalues
+
+# Matrix A
+A = np.array([[4, 1, 1],
+              [1, 3, -1],
+              [1, -1, 2]])
+
+# Compute eigenvalues and eigenvectors using Power Iteration
+eigenvalue_power, eigenvector_power = power_iteration(A, 1000)
+
+# Compute eigenvalues using QR Algorithm
+eigenvalues_qr = qr_algorithm(A, 1000)
+
+# Print results
+print("Power Iteration Method:")
+print("Eigenvalue:", eigenvalue_power)
+print("Eigenvector:", eigenvector_power)
+
+print("\nQR Algorithm:")
+print("Eigenvalues:", eigenvalues_qr)
+
+# Discussion
+print("\nDiscussion:")
+print("The Power Iteration method finds the largest eigenvalue and its corresponding eigenvector.")
+print("The QR Algorithm provides all eigenvalues of the matrix.")
+print("Comparing the largest eigenvalue from both methods:")
+print("Largest eigenvalue from Power Iteration:", eigenvalue_power)
+print("Largest eigenvalue from QR Algorithm:", max(eigenvalues_qr))
+Power Iteration Method:
+Eigenvalue: 4.6751308705666474
+Eigenvector: [0.88765034 0.42713229 0.17214786]
+
+QR Algorithm:
+Eigenvalues: [4.67513087 3.53918887 0.78568026]
+
+
+# Function to compute the gradient
+def compute_gradient(x, y):
+    df_dx = 2 * x - y + 1
+    df_dy = 2 * y - x - 1
+    return np.array([df_dx, df_dy])
+
+# Gradient Descent function
+def gradient_descent(learning_rate, initial_guess, num_iterations):
+    x, y = initial_guess
+    for _ in range(num_iterations):
+        gradient = compute_gradient(x, y)
+        x -= learning_rate * gradient[0]
+        y -= learning_rate * gradient[1]
+    return x, y
+
+# Parameters
+learning_rate = 0.1
+initial_guess = (0, 0)
+num_iterations = 100
+
+# Perform Gradient Descent
+x_min, y_min = gradient_descent(learning_rate, initial_guess, num_iterations)
+
+print("Minimum point (x, y):", (x_min, y_min))
+print("Minimum value of the function:", x_min**2 + y_min**2 - x_min * y_min + x_min - y_min + 1)
+Minimum point (x, y): (-0.3333333333333332, 0.3333333333333332)
+Minimum value of the function: 0.6666666666666666
+ 
